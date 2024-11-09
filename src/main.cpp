@@ -3,9 +3,9 @@
 bool clamp_state = false;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup left_drive({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-pros::MotorGroup right_drive({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
-pros::Motor intake_outtake(1,pros::v5::MotorGear::green,pros::v5::MotorUnits::degrees);
+pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
+pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+pros::MotorGroup intake_outtake({1,2});
 pros::ADIDigitalOut clamp('A', clamp_state);
 
 int reverse = 1;
