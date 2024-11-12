@@ -15,7 +15,8 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
 pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
 pros::MotorGroup intake_outtake({1,2});
-pros::ADIDigitalOut clamp('A', clamp_state);
+pros::ADIDigitalOut clamp1('A', clamp_state);
+pros::ADIDigitalOut clamp2('B', clamp_state);
 
 int reverse = 1;
 
@@ -119,7 +120,8 @@ void opcontrol() {
 
 		if (master.get_digital_new_press(DIGITAL_X)) {
 			clamp_state = clamp_state * -1;
-			clamp.set_value(clamp_state);
+			clamp1.set_value(clamp_state);
+			clamp2.set_value(clamp_state);
 		}
 
 
