@@ -16,7 +16,7 @@ pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forward
 pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
 pros::MotorGroup intake_outtake({1,2});
 pros::ADIDigitalOut clamp1('A', clamp_state);
-pros::ADIDigitalOut clamp2('B', clamp_state);
+pros::ADIDigitalOut clamp2('H', clamp_state);
 
 int reverse = 1;
 
