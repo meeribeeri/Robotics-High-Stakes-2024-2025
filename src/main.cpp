@@ -9,7 +9,7 @@ use pros terminal
 	Add "compileCommands": "${workspaceFolder}/compile_commands.json" in c_cpp_properties.json if headers still fail
 	pros mut (to upload to robot)
 */
-bool clamp_state = false;
+bool clamp_state = -1;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
