@@ -119,7 +119,7 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(DIGITAL_X)) {
-			clamp_state = !clamp_state;
+			clamp_state = clamp_state ^ 0x1;
 			clamp1.set_value(clamp_state);
 			clamp2.set_value(clamp_state);
 		}
