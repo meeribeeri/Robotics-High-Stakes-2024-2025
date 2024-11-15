@@ -111,9 +111,9 @@ void opcontrol() {
 		}
 
 		if (master.get_digital(DIGITAL_B)) {
-			intake_outtake.move(127*0.5);
+			intake_outtake.move(127*0.8);
 		} else if (master.get_digital(DIGITAL_DOWN)) {
-			intake_outtake.move(-127*0.5);
+			intake_outtake.move(-127*0.8);
 		} else {
 			intake_outtake.move(0);
 		}
