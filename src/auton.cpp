@@ -2,10 +2,6 @@
 
 
 
-std::vector<int[]> readFile(const char* file_name) {
-    //FILE* usd_auton_file = fopen(file_name,"r");
-    //left motors, right motors, clamp, 
-}
 
 void forward(int millis) {
     left_drive.move(-90);
@@ -24,7 +20,7 @@ void backward(int millis) {
 }
 
 
-void left_turn() {
+void right_turn() {
     left_drive.move(-90);
     right_drive.move(90);
     pros::delay(200);
@@ -32,12 +28,44 @@ void left_turn() {
     right_drive.move(0);
 }
 
-void right_turn() {
+void right(int delay) {
+    left_drive.move(-90);
+    right_drive.move(90);
+    pros::delay(delay);
+    left_drive.move(0);
+    right_drive.move(0);
+}
+
+void left(int delay) {
+    left_drive.move(90);
+    right_drive.move(-90);
+    pros::delay(delay);
+    left_drive.move(0);
+    right_drive.move(0);
+}
+
+void left_turn() {
     left_drive.move(90);
     right_drive.move(-90);
     pros::delay(200);
     left_drive.move(0);
     right_drive.move(0);
+}
+
+//gear ratio: 3 turns for 5 nof drive
+void left_turn(int degrees) {
+    left_drive.move_relative(degrees,90);
+    left_drive.move_relative(-degrees,90);
+}
+
+void right_turn(int degrees) {
+    left_drive.move_relative(-degrees,90);
+    left_drive.move_relative(degrees,90);
+}
+
+void straight(int degrees) {
+    left_drive.move_relative(degrees,90);
+    left_drive.move_relative(degrees,90);
 }
 
 void clamp() {
@@ -46,7 +74,7 @@ void clamp() {
 	clamp2.set_value(clamp_state);
 }
 
-void auto1() {
+void auto1() { //right side
     clamp();
     backward(1000);
     clamp();
@@ -59,7 +87,7 @@ void auto1() {
 
 }
 
-void auto2() {
+void auto2() { //left side
     clamp();
     backward(1000);
     clamp();
@@ -70,7 +98,36 @@ void auto2() {
     intake_outtake.move(0);
 }
 
-void auto3() {
-    forward(500);
+void auto3() { //fuck if I know
+    clamp();
+    backward(1000);
+    clamp();
+    intake_outtake.move(127*0.8);
+    pros::delay(750);
 }
 
+void auto5() { //right side unknown working
+    clamp();
+    backward(1000);
+    clamp();
+    right(250);
+    intake_outtake.move(127*0.8);
+    forward(750);
+    pros::delay(750);
+    intake_outtake.move(0);
+    right_turn();
+    backward(1000);
+}
+
+void auto6() { //left side unknown working
+    clamp();
+    backward(1000);
+    clamp();
+    left(250);
+    intake_outtake.move(127*0.8);
+    forward(7500);
+    pros::delay(750);
+    intake_outtake.move(0);
+    left_turn();
+    backward(1000);
+}

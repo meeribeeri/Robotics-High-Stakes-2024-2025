@@ -14,10 +14,10 @@ bool clamp_state = false;
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
 pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
-pros::MotorGroup intake_outtake({1,2});
-pros::ADIDigitalOut clamp1('A', clamp_state);
-pros::ADIDigitalOut clamp2('H', clamp_state);
-
+pros::MotorGroup intake_outtake({1,3});
+pros::adi::DigitalOut clamp1('A', clamp_state);
+pros::adi::DigitalOut clamp2('H', clamp_state);
+bool one_stick = true;
 int reverse = 1;
 
 /**
@@ -98,7 +98,7 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	
+	one_stick = true;
 	reverse = 1;
 
 	while (true) {
@@ -107,11 +107,24 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
 		//drive stuff
-		left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
-		right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+		if (one_stick) {
+			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_LEFT_X) * 0.5))));
+			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_LEFT_X) * 0.5))));
+		} else {
+			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+		}
 		
+		if (master.get_digital_new_press(DIGITAL_R2) && master.get_digital(DIGITAL_L2)) {
+			one_stick = one_stick ^ 0x1;
+			master.rumble("---");
+			std::cout << master.get_digital_new_press(DIGITAL_R2) << " " << master.get_digital(DIGITAL_L2) << std::endl;
+		}
+
+
 		if (master.get_digital_new_press(DIGITAL_R1) && master.get_digital(DIGITAL_L1)) {
 			reverse = reverse * -1;
+			master.rumble("...");
 		}
 
 		if (master.get_digital(DIGITAL_B)) {
