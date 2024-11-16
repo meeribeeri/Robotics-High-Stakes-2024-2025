@@ -74,6 +74,19 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
+
+extern bool clamp_state;
+extern pros::MotorGroup left_drive;    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
+extern pros::MotorGroup right_drive;  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+extern pros::MotorGroup intake_outtake;
+extern pros::ADIDigitalOut clamp1;
+extern pros::ADIDigitalOut clamp2;
+
+void auto1();
+void auto2();
+
+
+
 #include <iostream>
 #include <vector>
 

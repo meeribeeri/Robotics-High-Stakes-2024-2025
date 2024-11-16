@@ -78,7 +78,11 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	auto1();
+
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -103,8 +107,8 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
 		//drive stuff
-		left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) + (master.get_analog(ANALOG_RIGHT_X) * 0.5)) * reverse));
-		right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) - (master.get_analog(ANALOG_RIGHT_X) * 0.5)) * reverse));
+		left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+		right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
 		
 		if (master.get_digital_new_press(DIGITAL_R1) && master.get_digital(DIGITAL_L1)) {
 			reverse = reverse * -1;
