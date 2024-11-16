@@ -103,8 +103,8 @@ void opcontrol() {
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
 
 		//drive stuff
-		left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_RIGHT_X)) * reverse));
-		right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_RIGHT_X)) * reverse));
+		left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) + (master.get_analog(ANALOG_RIGHT_X) * 0.5)) * reverse));
+		right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) - (master.get_analog(ANALOG_RIGHT_X) * 0.5)) * reverse));
 		
 		if (master.get_digital_new_press(DIGITAL_R1) && master.get_digital(DIGITAL_L1)) {
 			reverse = reverse * -1;
