@@ -10,13 +10,15 @@ use pros terminal
 	pros mut (to upload to robot)
 */
 bool clamp_state = false;
+bool flag_state = false;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+pros::MotorGroup left_drive({-17, 18});  //18 is lower
+pros::MotorGroup right_drive({19, -20}); //19 is upper
 pros::MotorGroup intake_outtake({1,3});
 pros::adi::DigitalOut clamp1('A', clamp_state);
-pros::adi::DigitalOut clamp2('H', clamp_state);
+pros::adi::DigitalOut flag('B', flag_state);
+
 bool one_stick = true;
 int reverse = 1;
 
@@ -128,7 +130,7 @@ void opcontrol() {
 		}
 
 		if (master.get_digital(DIGITAL_B)) {
-			intake_outtake.move(127*0.8);
+			intake_outtake.move(127 * 0.5);
 		} else if (master.get_digital(DIGITAL_DOWN)) {
 			intake_outtake.move(-127*0.8);
 		} else {
@@ -138,8 +140,12 @@ void opcontrol() {
 		if (master.get_digital_new_press(DIGITAL_X)) {
 			clamp_state = clamp_state ^ 0x1;
 			clamp1.set_value(clamp_state);
-			clamp2.set_value(clamp_state);
 		}
+		if (master.get_digital_new_press(DIGITAL_UP)) {
+			flag_state = flag_state ^ 0x1;
+			flag.set_value(flag_state);
+		}
+
 
 
 		pros::delay(20);                               // Run for 20 ms then update

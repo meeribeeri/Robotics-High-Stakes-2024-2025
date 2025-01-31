@@ -76,19 +76,25 @@ void opcontrol(void);
  */
 
 extern bool clamp_state;
+extern bool flag_state;
+
 extern pros::MotorGroup left_drive;    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
 extern pros::MotorGroup right_drive;  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
 extern pros::MotorGroup intake_outtake;
 extern pros::adi::DigitalOut clamp1;
-extern pros::adi::DigitalOut clamp2;
+extern pros::adi::DigitalOut flag;
+
+extern double target_right;
+extern double target_left;
 
 void auto1();
 void auto2();
+void shitton();
 
 
 
 #include <iostream>
-#include <vector>
+#include <cmath>
 
 #endif
 
