@@ -11,6 +11,7 @@ use pros terminal
 */
 bool clamp_state = false;
 bool climb_state = false;
+bool flag_state = false;
 int high_pos = 0;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
@@ -22,6 +23,8 @@ pros::adi::DigitalOut clamp1('A', clamp_state);
 pros::adi::DigitalOut clamp2('H', clamp_state);
 pros::adi::DigitalOut climb1('B', climb_state);
 pros::adi::DigitalOut climb2('C', climb_state);
+pros::adi::DigitalOut flag('D', flag_state);
+
 bool one_stick = true;
 int reverse = 1;
 
@@ -149,6 +152,10 @@ void opcontrol() {
 			climb_state = climb_state ^ 0x1;
 			climb1.set_value(climb_state);
 			climb2.set_value(climb_state);
+		}
+		if (master.get_digital_new_press(DIGITAL_UP)) {
+			flag_state = flag_state ^ 0x1;
+			flag.set_value(flag_state);
 		}
 
 		if (master.get_digital_new_press(DIGITAL_A)) {
