@@ -10,13 +10,18 @@ use pros terminal
 	pros mut (to upload to robot)
 */
 bool clamp_state = false;
+bool climb_state = false;
+int high_pos = 0;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
 pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
 pros::MotorGroup intake_outtake({1,3});
+pros::Motor high_score(1);
 pros::adi::DigitalOut clamp1('A', clamp_state);
 pros::adi::DigitalOut clamp2('H', clamp_state);
+pros::adi::DigitalOut climb1('B', climb_state);
+pros::adi::DigitalOut climb2('C', climb_state);
 bool one_stick = true;
 int reverse = 1;
 
@@ -139,6 +144,36 @@ void opcontrol() {
 			clamp_state = clamp_state ^ 0x1;
 			clamp1.set_value(clamp_state);
 			clamp2.set_value(clamp_state);
+		}
+		if (master.get_digital_new_press(DIGITAL_Y)) {
+			climb_state = climb_state ^ 0x1;
+			climb1.set_value(climb_state);
+			climb2.set_value(climb_state);
+		}
+
+		if (master.get_digital_new_press(DIGITAL_A)) {
+			switch (high_pos) {
+				case 0:
+					high_pos = 30;
+					high_score.move(0);
+					break;
+				case 30:
+					high_pos = 135;
+					high_score.move_absolute(high_pos, 10);
+					break;
+				case 135:
+					high_pos = 0;
+					high_score.move_absolute(high_pos, 10);
+					break;
+			}
+		}
+
+		if (master.get_digital(DIGITAL_RIGHT)) {
+			high_score.move(50);
+		}
+
+		if (master.get_digital(DIGITAL_LEFT)) {
+			high_score.move(-50);
 		}
 
 
