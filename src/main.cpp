@@ -14,8 +14,8 @@ bool climb_state = false;
 int high_pos = 0;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup left_drive({-17, 18});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-pros::MotorGroup right_drive({19, -20});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
+pros::MotorGroup left_drive({-17, 18});  //18 is lower
+pros::MotorGroup right_drive({19, -20}); //19 is upper
 pros::MotorGroup intake_outtake({1,3});
 pros::Motor high_score(1);
 pros::adi::DigitalOut clamp1('A', clamp_state);
@@ -133,7 +133,7 @@ void opcontrol() {
 		}
 
 		if (master.get_digital(DIGITAL_B)) {
-			intake_outtake.move(127*0.8);
+			intake_outtake.move(127 * 0.5);
 		} else if (master.get_digital(DIGITAL_DOWN)) {
 			intake_outtake.move(-127*0.8);
 		} else {
