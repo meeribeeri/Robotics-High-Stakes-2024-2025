@@ -13,19 +13,21 @@ bool clamp_state = false;
 bool climb_state = false;
 bool flag_state = false;
 int high_pos = 0;
+bool manual_high = false;
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::MotorGroup left_drive({-17, 18});  //18 is lower
-pros::MotorGroup right_drive({19, -20}); //19 is upper
-pros::MotorGroup intake_outtake({1,3});
-pros::Motor high_score(1);
+pros::MotorGroup left_drive({-17, -18});  //18 is lower
+pros::MotorGroup right_drive({19, 20}); //19 is upper
+pros::MotorGroup intake_outtake({2,3});
+pros::Motor stupid_front_intake(2);
+pros::Motor high_score(10);
 pros::adi::DigitalOut clamp1('A', clamp_state);
 pros::adi::DigitalOut clamp2('H', clamp_state);
-pros::adi::DigitalOut climb1('B', climb_state);
+pros::adi::DigitalOut climb1('D', climb_state);
 pros::adi::DigitalOut climb2('C', climb_state);
-pros::adi::DigitalOut flag('D', flag_state);
+pros::adi::DigitalOut flag('B', flag_state);
 
-bool one_stick = true;
+bool one_stick = false;
 int reverse = 1;
 
 /**
@@ -87,8 +89,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	auto1();
-
+	skills_simple();
 
 }
 
@@ -106,8 +107,9 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	one_stick = true;
+	one_stick = false;
 	reverse = 1;
+	high_score.tare_position();
 
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
@@ -116,11 +118,11 @@ void opcontrol() {
 
 		//drive stuff
 		if (one_stick) {
-			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_LEFT_X) * 0.5))));
-			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_LEFT_X) * 0.5))));
+			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_LEFT_X) * 0.5))));
+			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_LEFT_X) * 0.5))));
 		} else {
-			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
-			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+			left_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse + (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
+			right_drive.move((int)((master.get_analog(ANALOG_LEFT_Y) * reverse - (master.get_analog(ANALOG_RIGHT_X) * 0.5))));
 		}
 		
 		if (master.get_digital_new_press(DIGITAL_R2) && master.get_digital(DIGITAL_L2)) {
@@ -136,9 +138,14 @@ void opcontrol() {
 		}
 
 		if (master.get_digital(DIGITAL_B)) {
-			intake_outtake.move(127 * 0.5);
+			if (high_pos == PRIMED) {
+				intake_outtake.move(127 * 0.40);
+			} else {
+				intake_outtake.move(127 * 0.75);
+				stupid_front_intake.move(127 * 95);
+			}
 		} else if (master.get_digital(DIGITAL_DOWN)) {
-			intake_outtake.move(-127*0.8);
+			intake_outtake.move(-127*0.5);
 		} else {
 			intake_outtake.move(0);
 		}
@@ -159,28 +166,35 @@ void opcontrol() {
 		}
 
 		if (master.get_digital_new_press(DIGITAL_A)) {
+			manual_high = false;
 			switch (high_pos) {
 				case 0:
-					high_pos = 30;
-					high_score.move(0);
+					high_pos = PRIMED;
+					high_score.move_absolute(-high_pos, 100);
 					break;
-				case 30:
-					high_pos = 135;
-					high_score.move_absolute(high_pos, 10);
+				case PRIMED:
+					high_pos = 225;
+					high_score.move_absolute(-high_pos, 100);
 					break;
-				case 135:
+				case 225:
 					high_pos = 0;
-					high_score.move_absolute(high_pos, 10);
+					high_score.move_absolute(high_pos, -100);
 					break;
 			}
 		}
 
 		if (master.get_digital(DIGITAL_RIGHT)) {
-			high_score.move(50);
+			manual_high = true;
+			high_score.move(75);
 		}
 
 		if (master.get_digital(DIGITAL_LEFT)) {
-			high_score.move(-50);
+			manual_high = true;
+			high_score.move(-75);
+		}
+
+		if (!master.get_digital(DIGITAL_RIGHT) && !master.get_digital(DIGITAL_LEFT) && manual_high) {
+			high_score.move(0);
 		}
 
 

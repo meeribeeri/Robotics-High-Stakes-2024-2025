@@ -19,7 +19,7 @@ double cm_to_wheel_degrees(double cm) {
 
 double wheel_degrees_to_motor(double degrees) {
     //36 / 60
-    return (60 / 36) * degrees;
+    return (60.f / 36.f) * degrees;
 }
 
 double dist_convert(double inches) {
@@ -63,16 +63,16 @@ void turn_relative(double degrees_right, double degrees_left) {
 
 
 void forward(int millis) {
-    left_drive.move(-90);
-    right_drive.move(-90);
+    left_drive.move(90);
+    right_drive.move(90);
     pros::delay(millis);
     left_drive.move(0);
     right_drive.move(0);
 }
 
 void backward(int millis) {
-    left_drive.move(90);
-    right_drive.move(90);
+    left_drive.move(-90);
+    right_drive.move(-90);
     pros::delay(millis);
     left_drive.move(0);
     right_drive.move(0);
@@ -80,22 +80,14 @@ void backward(int millis) {
 
 
 void right_turn() {
-    left_drive.move(-90);
-    right_drive.move(90);
+    left_drive.move(90);
+    right_drive.move(-90);
     pros::delay(150);
     left_drive.move(0);
     right_drive.move(0);
 }
 
 void right(int delay) {
-    left_drive.move(-90);
-    right_drive.move(90);
-    pros::delay(delay);
-    left_drive.move(0);
-    right_drive.move(0);
-}
-
-void left(int delay) {
     left_drive.move(90);
     right_drive.move(-90);
     pros::delay(delay);
@@ -103,8 +95,16 @@ void left(int delay) {
     right_drive.move(0);
 }
 
+void left(int delay) {
+    left_drive.move(-90);
+    right_drive.move(90);
+    pros::delay(delay);
+    left_drive.move(0);
+    right_drive.move(0);
+}
+
 void left_turn() {
-    left_drive.move(90);
+    left_drive.move(-90);
     right_drive.move(-90);
     pros::delay(150);
     left_drive.move(0);
@@ -230,4 +230,8 @@ void skills() {
     forward_relative(-dist_convert(1));
     turn_stationary(-90 - atan(11.30/70.20) + atan(3.50/(70.20-4.0)));
     forward(dist_convert(sqrt(pow(3.50,2) + pow(70.20 - 4.0,2))));
+}
+
+void skills_simple() {
+    high_score.move(-127);
 }

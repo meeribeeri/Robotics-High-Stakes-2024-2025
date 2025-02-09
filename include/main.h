@@ -83,6 +83,8 @@ extern pros::MotorGroup right_drive;  // Creates a motor group with forwards por
 extern pros::MotorGroup intake_outtake;
 extern pros::adi::DigitalOut clamp1;
 extern pros::adi::DigitalOut flag;
+extern pros::Motor high_score;
+
 
 extern double target_right;
 extern double target_left;
@@ -90,8 +92,9 @@ extern double target_left;
 void auto1();
 void auto2();
 void shitton();
+void skills_simple();
 
-
+#define PRIMED 65
 
 #include <iostream>
 #include <cmath>
